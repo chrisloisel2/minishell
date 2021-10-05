@@ -6,40 +6,35 @@
 /*   By: ljulien <ljulien@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/02 19:35:42 by ljulien           #+#    #+#             */
-/*   Updated: 2021/09/29 20:29:41 by ljulien          ###   ########.fr       */
+/*   Updated: 2021/10/04 21:04:43 by ljulien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char *type_str[7] = {"ERROR", "TEXT", "TRUNC", "APPEND", "HEREDOC", "INPUT", "PIPE"};
-
-char	**new_env(char **ap, char *str)
+char	**new_env(char **ap)
 {
 	int i;
 	char **new;
 
 	i = 0;
-	while (ap[i] != NULL)
-		i++;
-	if (str)
+	while (ap && ap[i] != NULL)
 		i++;
 	new = malloc(sizeof(char *) * i + 1);
 	i = 0;
-	while (ap[i] != NULL)
+	while (ap && ap[i] != NULL)
 	{
 		new[i] = ft_strdup(ap[i]);
 		i++;
 	}
-	if (str)
-		new[i++] = ft_strdup(str);
 	new[i] = NULL;
 	return (new);
 }
 
 void	initialization_shell(t_shell *shell, char **ap)
 {
-	shell->env = new_env(ap, NULL);
+	shell->env = new_env(ap);
+	shell->exp = NULL;
 	shell->tokens = NULL;
 	shell->path = ft_split(search_env(shell->env, "PATH") + 5, ':');
 	if (!(shell->path))
@@ -52,51 +47,12 @@ void	initialization_shell(t_shell *shell, char **ap)
 void	loop(t_shell *shell)
 {
 	char 	*line;
-	int		error;
-	t_token *lst;
-	int		i;
-	t_cmd	*cmd;
 
 	line = NULL;
 	while((line = readline("Minishell :")) != NULL)
 	{
-		error = tokenizer(shell, line);
-		lst = shell->tokens;
-		while(lst)
-		{
-			// printf("le type est %s et la ligne est :%s\n", type_str[(int)(lst->type)], lst->line);
-			lst = lst->next;
-		}
-		error = check_syntax_error(shell, error);
-		if(!error)
-			parsing(shell);
-		free(line);
-		line = NULL;
-		ft_tokenclear(&(shell->tokens));
-		cmd = shell->cmd;
-		while(cmd)
-		{
-			i = 0;
-			// printf("le input fd est %d et le output fd est %d\n", cmd->fd_in, cmd->fd_out);
-			while(cmd->cmds && cmd->cmds[i])
-			{
-				// printf("ARG %d = %s  ", i + 1, cmd->cmds[i]);
-				i++;
-			}
-			if (cmd->fd_in != -1)
-			{
-				char *str;
-				str =NULL;
-				// printf("HEREDOC:\n");
-				while(get_next_line(cmd->fd_in, &str))
-				{
-					printf("%s\n", str);
-				}
-			}
-			starting_execution(shell);
-			// printf("\n\n");
-			cmd = cmd->next;
-		}
+		line = parsing_tokenizer(shell, line); // fonction regroupant toute les fonctions parsing et tokenization,  qui free line et retourne NULL,
+		starting_execution(shell);
 	}
 }
 
@@ -105,8 +61,7 @@ int	main(int ac, char **av, char **ap)
 	t_shell	*sh;
 
 	sh = NULL;
-	ac = 0;
-	av = 0;
+	if (ac && av)
 	sh = malloc(sizeof(t_shell));
 	if (sh == NULL)
 	{

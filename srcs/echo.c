@@ -1,34 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   search_cmd.c                                       :+:      :+:    :+:   */
+/*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ljulien <ljulien@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/22 00:44:42 by ljulien           #+#    #+#             */
-/*   Updated: 2021/09/28 22:18:13 by ljulien          ###   ########.fr       */
+/*   Created: 2021/09/30 00:55:27 by ljulien           #+#    #+#             */
+/*   Updated: 2021/10/03 18:47:15 by ljulien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	search_cmd(t_shell *shell, char *cmd)
+int     builtin_echo(char **args)
 {
-	int	i;
+    int i;
+    int option;
 
-	i = 0;
-	cmd = NULL;
-	while (shell->path[i])
-	{
-		if (check_path(shell->path[i], cmd))
-			return ;
-		i++;
-	}
-	if (cmd)
-		ft_putstr_fd("minishell: Permission denied: ", 2);
-	else
-		ft_putstr_fd("minishell: Command not found: ", 2);
-	ft_putendl_fd(cmd, 2);
-	free(cmd);
-	cmd = NULL;
+    i = 1;
+    option = 0;
+    if (args[1] && ft_strncmp(args[1], "-n", 2) == 0)
+    {
+        option = 1;
+        i++;
+    }
+    while(args[i])
+    {
+        ft_putstr_fd(args[i], 1);
+        if (args[i + 1])
+            ft_putstr_fd(" ", 1);
+        i++;
+    }
+    if (option == 0)
+        ft_putstr_fd("\n", 1);
+    return(0);
 }

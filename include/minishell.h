@@ -6,7 +6,7 @@
 /*   By: ljulien <ljulien@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/02 19:33:30 by ljulien           #+#    #+#             */
-/*   Updated: 2021/09/28 23:32:21 by ljulien          ###   ########.fr       */
+/*   Updated: 2021/10/04 21:02:16 by ljulien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # include <readline/history.h>
 # include "libft.h"
 
-enum types 
+enum e_types //enumeration pour les different type de token utile que dans la partie parsing-lexer.
 {
 	ERROR,
 	TEXT,
@@ -38,29 +38,32 @@ enum types
 typedef	struct	s_token t_token;
 typedef	struct	s_cmd t_cmd;
 
-typedef	struct	s_token
+typedef	struct	s_token //struture pour les token n'est utile que pour le parsing.
 {
-	enum types	type;
-	char		*line;
-	int			fd;
-	t_token		*next;
+	enum e_types	type;
+	char			*line;
+	int				fd;
+	t_token			*next;
 }	t_token;
 
-typedef	struct	s_cmd
+typedef	struct	s_cmd //struture pour les commande chaque commande succesives est separee par un pipe.
 {
-	char	**cmds;
-	int		fd_in;
-	int		fd_out;
+	char	**cmds; //cmds[0] est la commandes et le reste jusqu'a cmds[n] == NULL sont des arguments pour la commande.
+	int		fd_in; //fd de redirection d'entree.
+	int		fd_out;	//fd de redirection de sortie.
+	char 	*msg_error;
 	t_cmd	*next;
 	t_cmd	*prev;
 }	t_cmd;	
 
-typedef struct s_shell
+typedef struct s_shell //struture pour minishell il sert a stocke et passer facilement des donnees en argument.
 {
-	char	**env;
-	char	**path;
-	t_token	*tokens;
-	t_cmd	*cmd;
+	char	**env;//tableau de string contenant les variables d'environement.
+	char	**exp;//tableau contenant les valeur d'export non initialisee.
+	char	**path;//tableau de string contenant les chemins de path.
+	t_token	*tokens;//utile que dans la partie parsing
+	t_cmd	*cmd;//pointeur vers la premiere commande.
+	int		exit_value;
 }	t_shell;
 
 int			check_path(char *path, char *cmd);
@@ -74,7 +77,7 @@ void    	handle_prompt(void);
 void    	handle_prompt_heredoc(void);
 void		exit_free(t_shell *shell);
 int			get_next_line(int fd, char** line);
-t_token		*ft_tokennew(enum types type, char *line);
+t_token		*ft_tokennew(enum e_types type, char *line);
 void		ft_token_add_back(t_token **atoken, t_token *new);
 t_token		*ft_tokenlast(t_token *token);
 char		*env_value(char **env, char *search);
@@ -82,8 +85,21 @@ void		message_error(char *msg);
 int			tokenizer(t_shell *shell, char *line);
 void		parsing(t_shell *shell);
 int 		check_syntax_error(t_shell *shell, int error);
+char		*parsing_tokenizer(t_shell *shell , char *line);
+void    	print_export(t_shell *shell);
+char		**delete_env(char **ap, char *str);
+int			ft_strcmp_sep(char *s1, char *s2, char sep);
+int     	builtin_echo(char **args);// <- echo
+int			builtin_env(t_shell *shell);// <- env
+int			builtin_export(t_shell *shell, char **args);// <- export
+int			builtin_unset(t_shell *shell, char **args); // <-unset
+
+//◦ cd
+//◦ pwd
+//◦ exit <- a moi
 
 void    starting_execution(t_shell *shell);
 void    display_struct(t_shell *shell);
+int     compare(char *in, char *out);
 
 #endif

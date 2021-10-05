@@ -3,17 +3,22 @@
 # Name of the final executable
 NAME = minishell
 
-# Create a list of *.c sources in DIRS
-SOURCES = srcs/check_path.c srcs/get_next_line.c srcs/parsing.c srcs/search_cmd.c srcs/exit_free.c srcs/main.c srcs/prompt.c srcs/tokenizer.c srcs/token_utils.c srcs/check_syntax_error.c srcs/start_exec.c srcs/display_struct.c
+# Create a list of .c sources in DIRS
+SOURCES =  	srcs/check_path.c		srcs/get_next_line.c 		srcs/parsing.c 				srcs/export.c	\
+			srcs/search_cmd.c	 	srcs/exit_free.c	 		srcs/main.c	 				srcs/prompt.c 	\
+			srcs/tokenizer.c	 	srcs/token_utils.c	 		srcs/check_syntax_error.c 					\
+			srcs/env.c 	  			srcs/parsing_tokenizer.c	srcs/echo.c	  								\
+			srcs/print_export.c		srcs/unset.c															\
+			srcs/mine/display_struct.c srcs/mine/start_exec.c	srcs/mine/compare.c
 
 # Define objects for all sources
 OBJS = $(SOURCES:.c=.o)
 
+RL = -lreadline
+
 # Define headers files
 CFLAGS = -Wall -Werror -Wextra
 HEADERS = -I include -I libft
-
-RL = -lreadline
 
 # Name the compiler
 CC = gcc
