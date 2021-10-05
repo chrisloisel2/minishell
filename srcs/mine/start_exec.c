@@ -6,7 +6,7 @@
 /*   By: lchristo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 17:06:37 by lchristo          #+#    #+#             */
-/*   Updated: 2021/09/30 17:06:39 by lchristo         ###   ########.fr       */
+/*   Updated: 2021/10/05 14:26:12 by lchristo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,5 @@ void    starting_execution(t_shell *shell)
         path(shell);
     else
         waitpid(i, NULL, 0);
-    display_struct(shell);
+    // display_struct(shell);
 }

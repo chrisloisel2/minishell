@@ -13,6 +13,8 @@ OBJS = $(SOURCES:.c=.o)
 CFLAGS = -Wall -Werror -Wextra
 HEADERS = -I include -I libft
 
+RL = -lreadline
+
 # Name the compiler
 CC = gcc
 
@@ -26,7 +28,7 @@ libft.a :
 	cd libft && $(MAKE) && mv libft.a ../
 
 $(NAME): $(OBJS)
-	$(CC) -g3 -fsanitize=address -o $@ $(OBJS) libft.a
+	$(CC) -g3 -fsanitize=address  $(RL) -o $@ $(OBJS) libft.a
 
 # Remove all objects, dependencies and executable files generated during the build
 clean:

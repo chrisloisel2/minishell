@@ -58,14 +58,13 @@ void	loop(t_shell *shell)
 	t_cmd	*cmd;
 
 	line = NULL;
-	handle_prompt();
-	while(get_next_line(0, &line))
+	while((line = readline("Minishell :")) != NULL)
 	{
 		error = tokenizer(shell, line);
 		lst = shell->tokens;
 		while(lst)
 		{
-			printf("le type est %s et la ligne est :%s\n", type_str[(int)(lst->type)], lst->line);
+			// printf("le type est %s et la ligne est :%s\n", type_str[(int)(lst->type)], lst->line);
 			lst = lst->next;
 		}
 		error = check_syntax_error(shell, error);
@@ -78,27 +77,26 @@ void	loop(t_shell *shell)
 		while(cmd)
 		{
 			i = 0;
-			printf("le input fd est %d et le output fd est %d\n", cmd->fd_in, cmd->fd_out);
+			// printf("le input fd est %d et le output fd est %d\n", cmd->fd_in, cmd->fd_out);
 			while(cmd->cmds && cmd->cmds[i])
 			{
-				printf("ARG %d = %s  ", i + 1, cmd->cmds[i]);
+				// printf("ARG %d = %s  ", i + 1, cmd->cmds[i]);
 				i++;
 			}
 			if (cmd->fd_in != -1)
 			{
 				char *str;
 				str =NULL;
-				printf("HEREDOC:\n");
+				// printf("HEREDOC:\n");
 				while(get_next_line(cmd->fd_in, &str))
 				{
 					printf("%s\n", str);
 				}
 			}
 			starting_execution(shell);
-			printf("\n\n");
+			// printf("\n\n");
 			cmd = cmd->next;
 		}
-		handle_prompt();
 	}
 }
 
