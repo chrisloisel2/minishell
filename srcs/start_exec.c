@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   start_exec.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lchristo <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ljulien <ljulien@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 17:06:37 by lchristo          #+#    #+#             */
-/*   Updated: 2021/10/05 14:26:12 by lchristo         ###   ########.fr       */
+/*   Updated: 2021/10/07 21:08:57 by lchristo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,7 @@ int     check_builtin(t_shell *shell, char *str)
 {
     int i;
 
-    i = 1;
-    // if (shell->cmd->msg_error != NULL)
-    // {
-    //    ft_putstr_fd(shell->cmd->msg_error, 2);
-    //    free(shell->cmd->msg_error);
-    //     return (0);
-    // }
+    i = -1;
     if (compare(str, "echo"))
         i = builtin_echo(shell->cmd->cmds);
     if (compare(str, "env"))
@@ -31,7 +25,11 @@ int     check_builtin(t_shell *shell, char *str)
         i = builtin_export(shell, shell->cmd->cmds);
     if (compare(str, "unset"))
         i = builtin_unset(shell, shell->cmd->cmds);
-    if (i < 0)
+    if (compare(str, "cd"))
+        i = builtin_cd(shell, shell->cmd->cmds);
+    if (compare(str, "pwd"))
+        i = builtin_pwd(shell);
+    if (i > 0)
         printf("problem\n");
     return (i);
 }
@@ -41,13 +39,18 @@ int     path(t_shell *shell)
     int i;
     char *str;
 
-    str = ft_strjoin("/", shell->cmd->cmds[0]);
     i = 0;
+    str = ft_strjoin("/", shell->cmd->cmds[0]);
+    if (shell->cmd->fd_out != -1)
+        dup2(shell->cmd->fd_out, shell->stdout);
+    if (check_builtin(shell, shell->cmd->cmds[0]) != -1)
+        exit (1) ;
     while (shell->path[i] != NULL)
     {
         execve(ft_strjoin(shell->path[i], str), shell->cmd->cmds, shell->env);
         i++;
     }
+    printf("minishell: %s: command not found\n", shell->cmd->cmds[0]);
     return (1);
 }
 
@@ -55,15 +58,20 @@ void    starting_execution(t_shell *shell)
 {
     int i;
 
-    display_struct(shell);
-    if (shell->cmd->fd_out != -1)
-        dup2(shell->cmd->fd_out, 1);
-    if (check_builtin(shell, shell->cmd->cmds[0]) == 0)
-        return ;
+    if (shell->cmd->msg_error != NULL)
+    {
+       ft_putendl_fd(shell->cmd->msg_error, 2);
+       free(shell->cmd->msg_error);
+       return ;
+    }
+    if (compare(shell->cmd->cmds[0], "exit"))
+        exit (0);
     i = fork();
     if (i == 0)
-        path(shell);
+    {
+        if (shell->cmd->cmds)
+            path(shell);
+    }
     else
         waitpid(i, NULL, 0);
-    // display_struct(shell);
 }

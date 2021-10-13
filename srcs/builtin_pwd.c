@@ -1,23 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   builtin_pwd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ljulien <ljulien@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/10/07 15:40:11 by ljulien           #+#    #+#             */
-/*   Updated: 2021/10/06 16:48:27 by ljulien          ###   ########.fr       */
+/*   Created: 2021/10/06 17:30:08 by ljulien           #+#    #+#             */
+/*   Updated: 2021/10/06 17:35:24 by ljulien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-size_t	ft_strlen(const char *s)
+int     builtin_pwd(t_shell *shell)
 {
-	size_t	n;
-
-	n = 0;
-	while (s && s[n] != 0)
-		n++;
-	return (n);
+    ft_putendl_fd(shell->pwd, 1);
+    return(0);
 }

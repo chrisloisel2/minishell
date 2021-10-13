@@ -6,7 +6,7 @@
 /*   By: ljulien <ljulien@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/02 19:33:30 by ljulien           #+#    #+#             */
-/*   Updated: 2021/10/04 21:02:16 by ljulien          ###   ########.fr       */
+/*   Updated: 2021/10/06 17:33:49 by ljulien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ typedef	struct	s_cmd //struture pour les commande chaque commande succesives est
 	char	**cmds; //cmds[0] est la commandes et le reste jusqu'a cmds[n] == NULL sont des arguments pour la commande.
 	int		fd_in; //fd de redirection d'entree.
 	int		fd_out;	//fd de redirection de sortie.
-	char 	*msg_error;
+	char	*msg_error;//message d'erreur si non nul ne pas executer la commande et passer qu prochain pipe
 	t_cmd	*next;
 	t_cmd	*prev;
 }	t_cmd;	
@@ -61,11 +61,15 @@ typedef struct s_shell //struture pour minishell il sert a stocke et passer faci
 	char	**env;//tableau de string contenant les variables d'environement.
 	char	**exp;//tableau contenant les valeur d'export non initialisee.
 	char	**path;//tableau de string contenant les chemins de path.
+	int		stdin;//Duplication fd of the standard input
+	int		stdout;//Duplication fd of the standard output
+	int		exit_status;// Value to change with the exit status of the executed pipe or command;
+	char	*pwd;//string where is store the path to the current directory.
 	t_token	*tokens;//utile que dans la partie parsing
 	t_cmd	*cmd;//pointeur vers la premiere commande.
-	int		exit_value;
 }	t_shell;
 
+void		initialization_shell(t_shell *shell, char **ap);
 int			check_path(char *path, char *cmd);
 void		search_cmd(t_shell *shell, char *cmd);
 void		exit_message_error(t_shell *shell, char *msg);
@@ -89,17 +93,13 @@ char		*parsing_tokenizer(t_shell *shell , char *line);
 void    	print_export(t_shell *shell);
 char		**delete_env(char **ap, char *str);
 int			ft_strcmp_sep(char *s1, char *s2, char sep);
+void    	starting_execution(t_shell *shell);
+void    	display_struct(t_shell *shell);
+int     	compare(char *in, char *out);
 int     	builtin_echo(char **args);// <- echo
 int			builtin_env(t_shell *shell);// <- env
 int			builtin_export(t_shell *shell, char **args);// <- export
 int			builtin_unset(t_shell *shell, char **args); // <-unset
-
-//◦ cd
-//◦ pwd
-//◦ exit <- a moi
-
-void    starting_execution(t_shell *shell);
-void    display_struct(t_shell *shell);
-int     compare(char *in, char *out);
-
+int			builtin_cd(t_shell *shell, char **arg);// <-cd
+int     	builtin_pwd(t_shell *shell);// <-pwd
 #endif

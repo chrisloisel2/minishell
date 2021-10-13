@@ -18,12 +18,14 @@ void    display_struct(t_shell *shell)
 	t_cmd	*cmd;
 
     cmd = shell->cmd;
+    printf("stdin = %d\n", shell->stdin);
+    printf("stdout = %d\n", shell->stdout);
     while (cmd != NULL)
     {
         i = 0;
         while (cmd->cmds[i] != NULL)
         {
-            printf("cmds[%d]: %s\n", i, cmd->cmds[i]);
+            // printf("cmds[%d]: %s\n", i, cmd->cmds[i]);
             i++;
         }
         printf("fd_in = %d\n", cmd->fd_in);
@@ -33,13 +35,13 @@ void    display_struct(t_shell *shell)
     i = 0;
     while (shell->env[i] != NULL)
     {
-        printf("en:%s\n", shell->env[i]);
+        // printf("en:%s\n", shell->env[i]);
         i++;
     }
     i = 0;
     while (shell->path[i] != NULL)
     {
-        printf("path:%s\n", shell->path[i]);
+        // printf("path:%s\n", shell->path[i]);
         i++;
     }
 }
