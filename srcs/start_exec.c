@@ -25,8 +25,6 @@ int     check_builtin(t_shell *shell, char *str)
         i = builtin_export(shell, shell->cmd->cmds);
     if (compare(str, "unset"))
         i = builtin_unset(shell, shell->cmd->cmds);
-    if (compare(str, "cd"))
-        i = builtin_cd(shell, shell->cmd->cmds);
     if (compare(str, "pwd"))
         i = builtin_pwd(shell);
     if (i > 0)
@@ -63,6 +61,11 @@ void    starting_execution(t_shell *shell)
        ft_putendl_fd(shell->cmd->msg_error, 2);
        free(shell->cmd->msg_error);
        return ;
+    }
+    if (compare(shell->cmd->cmds[0], "cd"))
+    {
+        i = builtin_cd(shell, shell->cmd->cmds);
+        return ;
     }
     if (compare(shell->cmd->cmds[0], "exit"))
         exit (0);
