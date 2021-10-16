@@ -1,0 +1,14 @@
+Makefile
+include
+libft
+libft.a
+minishell
+srcs
+test
+Makefile
+include
+libft
+libft.a
+minishell
+srcs
+test

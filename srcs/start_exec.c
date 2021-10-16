@@ -48,8 +48,15 @@ int     path(t_shell *shell)
         execve(ft_strjoin(shell->path[i], str), shell->cmd->cmds, shell->env);
         i++;
     }
+    execve(ft_strjoin("./", str), shell->cmd->cmds, shell->env);
     printf("minishell: %s: command not found\n", shell->cmd->cmds[0]);
     return (1);
+}
+
+void    print_error(t_shell *shell)
+{
+    ft_putendl_fd(shell->cmd->msg_error, 2);
+    free(shell->cmd->msg_error);
 }
 
 void    starting_execution(t_shell *shell)
@@ -58,9 +65,14 @@ void    starting_execution(t_shell *shell)
 
     if (shell->cmd->msg_error != NULL)
     {
-       ft_putendl_fd(shell->cmd->msg_error, 2);
-       free(shell->cmd->msg_error);
-       return ;
+        print_error(shell);
+        return ;
+    }
+    if (shell->cmd->next != NULL)
+    {
+        shell->cmd = shell->cmd->next;
+        starting_execution(shell);
+        shell->cmd = shell->cmd->prev;
     }
     if (compare(shell->cmd->cmds[0], "cd"))
     {
