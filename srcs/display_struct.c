@@ -18,8 +18,8 @@ void    display_struct(t_shell *shell)
 	t_cmd	*cmd;
 
     cmd = shell->cmd;
-    printf("stdin = %d\n", shell->stdin);
-    printf("stdout = %d\n", shell->stdout);
+    // printf("stdin = %d\n", shell->stdin);
+    // printf("stdout = %d\n", shell->stdout);
     while (cmd != NULL)
     {
         i = 0;

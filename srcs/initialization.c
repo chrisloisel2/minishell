@@ -115,12 +115,12 @@ void	initialization_shell(t_shell *shell, char **ap)
 	shell->exp = NULL;
 	shell->tokens = NULL;
 	shell->path = ft_split(search_env(shell->env, "PATH") + 5, ':');
-	shell->stdin = dup(0);
+	// shell->stdin = dup(0);
 	// printf("stdin->%d\n", shell->stdin);
-	shell->stdin = dup2(shell->stdin, 0);
+	// shell->stdin = dup2(shell->stdin, 0);
 	// printf("stdin->%d\n", shell->stdin);
-	shell->stdout = dup(1);
-	shell->stdout = dup2(shell->stdout, 1);
+	// shell->stdout = dup(1);
+	// shell->stdout = dup2(shell->stdout, 1);
 	// printf("stdin->%d\n", shell->stdout);
 	initialization_pwd(shell);
 	initialization_shlvl(shell);

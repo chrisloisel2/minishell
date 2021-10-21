@@ -61,8 +61,8 @@ typedef struct s_shell //struture pour minishell il sert a stocke et passer faci
 	char	**env;//tableau de string contenant les variables d'environement.
 	char	**exp;//tableau contenant les valeur d'export non initialisee.
 	char	**path;//tableau de string contenant les chemins de path.
-	int		stdin;//Duplication fd of the standard input
-	int		stdout;//Duplication fd of the standard output
+	int		*tpid;//tableau de pid pour waitpid
+	int		*tpipe;//tableau de pipe pour dup2
 	int		exit_status;// Value to change with the exit status of the executed pipe or command;
 	char	*pwd;//string where is store the path to the current directory.
 	t_token	*tokens;//utile que dans la partie parsing

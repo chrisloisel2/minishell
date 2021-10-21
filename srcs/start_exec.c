@@ -39,8 +39,8 @@ int     path(t_shell *shell)
 
     i = 0;
     str = ft_strjoin("/", shell->cmd->cmds[0]);
-    if (shell->cmd->fd_out != -1)
-        dup2(shell->cmd->fd_out, shell->stdout);
+    // if (shell->cmd->fd_out != -1)
+        // dup2(shell->cmd->fd_out, shell->stdout);
     if (check_builtin(shell, shell->cmd->cmds[0]) != -1)
         exit (1) ;
     while (shell->path[i] != NULL)
@@ -59,20 +59,62 @@ void    print_error(t_shell *shell)
     free(shell->cmd->msg_error);
 }
 
+t_cmd   *first_cmd(t_shell *shell)
+{
+    t_cmd *next;
+
+    next = shell->cmd;
+    if (shell->cmd->prev == NULL)
+        return (shell->cmd);
+    while (next->prev != NULL)
+        next = next->prev;
+    return (next);
+}
+
+int     nb_pipes(t_shell *shell)
+{
+    t_cmd   *next;
+    int     i;
+
+    i = 0;
+    next = shell->cmd;
+    while (next->next != NULL)
+    {
+        i++;
+        next = next->next;
+    }
+    return (i);
+}
+
+void    ft_build_pipes(t_shell *shell, int i)
+{
+    while(i > 0)
+    {
+        pipe(&shell->tpipe[i]);
+        i--;
+    }
+}
+
+void    ft_build_tabs(t_shell *shell)
+{
+    int nb_pipe;
+    int nb_pid;
+
+    nb_pipe = nb_pipes(shell);
+    shell->tpipe = malloc(sizeof(int) * nb_pipe * 2);
+    ft_build_pipes(shell, nb_pipe);
+    shell->tpid = malloc(sizeof(int) * nb_pipe + 1);
+}
+
 void    starting_execution(t_shell *shell)
 {
     int i;
 
+    ft_build_tabs(shell);
     if (shell->cmd->msg_error != NULL)
     {
         print_error(shell);
         return ;
-    }
-    if (shell->cmd->next != NULL)
-    {
-        shell->cmd = shell->cmd->next;
-        starting_execution(shell);
-        shell->cmd = shell->cmd->prev;
     }
     if (compare(shell->cmd->cmds[0], "cd"))
     {
