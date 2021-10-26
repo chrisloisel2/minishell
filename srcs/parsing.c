@@ -17,6 +17,10 @@ t_cmd   *new_struct_cmd(t_cmd *prev)
     t_cmd *cmd;
 
     cmd = malloc(sizeof(t_cmd));
+    if (prev == NULL)
+        cmd->num = 1;
+    else
+        cmd->num = prev->num + 1;
     cmd->prev = prev;
     cmd->fd_in = -1;
     cmd->fd_out = -1;

@@ -48,6 +48,7 @@ typedef	struct	s_token //struture pour les token n'est utile que pour le parsing
 
 typedef	struct	s_cmd //struture pour les commande chaque commande succesives est separee par un pipe.
 {
+	int		num;// num de la commande
 	char	**cmds; //cmds[0] est la commandes et le reste jusqu'a cmds[n] == NULL sont des arguments pour la commande.
 	int		fd_in; //fd de redirection d'entree.
 	int		fd_out;	//fd de redirection de sortie.
@@ -62,7 +63,7 @@ typedef struct s_shell //struture pour minishell il sert a stocke et passer faci
 	char	**exp;//tableau contenant les valeur d'export non initialisee.
 	char	**path;//tableau de string contenant les chemins de path.
 	int		*tpid;//tableau de pid pour waitpid
-	int		*tpipe;//tableau de pipe pour dup2
+	int		**tpipe;//tableau de pipe pour dup2
 	int		exit_status;// Value to change with the exit status of the executed pipe or command;
 	char	*pwd;//string where is store the path to the current directory.
 	t_token	*tokens;//utile que dans la partie parsing
